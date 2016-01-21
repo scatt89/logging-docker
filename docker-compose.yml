@@ -1,0 +1,44 @@
+elasticsearch:
+  container_name: elasticsearch
+  image: elasticsearch
+
+kibana:
+  container_name: kibana
+  image: kibana
+  ports:
+    - "5601:5601"
+  links:
+    - elasticsearch:elasticsearch
+  restart: always
+
+fluentd:
+  container_name: fluentd
+  image: scatt89/fluentd
+  ports:
+    - "24224:24224"
+  links:
+    - elasticsearch:elasticsearch
+  restart: always
+
+mysql:
+  container_name: db
+  image: mysql
+  log_driver: "fluentd"
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: anuncios
+  links:
+    - fluentd:log
+  restart: always
+
+app:
+  container_name: app
+  image: scatt89/apirest
+  log_driver: "fluentd"
+  ports:
+    - "8080:8080"
+  links: 
+    - mysql:db
+  restart: always
+
+
