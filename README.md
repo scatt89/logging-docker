@@ -1,46 +1,61 @@
 # Logging Docker
 
-Una solución integrada de monitorización y logging para docker.
+An integrated logging and monitoring solution for docker.
 
-### Intro
-Logging Docker es un proyecto que busca dar una solución de monitorización y logging para tus contenedores docker. En el diagrama siguiente se muestra la estructura de este proyecto.
+## What is Logging-Docker?
 
-(diagrama)
+Logging-Docker is a Docker-compose project which provides a monitoring and logging solution for your docker container. The following diagram shows the project schema.
 
-Como has podido ver en el diagrama tenemos un contenedor docker con una api-rest, a partir de ahora lo llamaremos app-containner, este contenedor está conectado a otro contenedor que es una base de datos para nuestra aplicación, a partir de ahora lo llamaremos bd-containner. Nuestro app-containner hace peticiones a nuestro bd-containner, este manda respuestas con algunos datos.
+_(schema)_
 
-Para registrar los logs de app-containner y bd-containner se usa el contenedor fluentd-containner. Este último guarda los logs en un contenedor Elasticsearch, el cual usamos por su gran eficiencia a la hora de almacenar y recuperar texto. El elasticsearch-containner va conectado a un kibana-containner, el cual nos permitirá visualizar en una interfaz web los logs almacenados en elasticsesarch-containner.
+As you can see we have a docker apirest container, from now we will call it __app-container__. This container is linked with another container which has a MySQL database. From now we will call this last one __db-container__. Our app-container makes requests to the db-container, which send replies with some data.
 
-### Puesta en marcha
+For record the _app-container_ and the _db-container_ logs we use a __fluentd-container__. This one stores the logs in a __elasticsearch-container__, which we use because it's great efficiency when indexing and retrieving text data. The _elasticsearch-container_ goes linked with a __kibana-container__, which allows us visualizing in a web interface the stored logs in the _elasticsearch-container_.
 
-Con las siguientes instrucciones por consola podemos arrancar manualmente todo el proyecto.
+## How to use this image
 
-1. Arrancamos un contenedor elasticsearch
+### Using Docker-compose
+This way is the easiest. You may have docker-compose previously installed in your machine.
 
-```sh
-$ docker run --name elasticsearch_containner elasticsearch
+Download the docker-compose.yml file from [this](https://github.com/scatt89/logging-docker.git) repository.
+
+* Run _docker-compose_ command in the same docker-compose.yml file directory.
+
 ```
-2. Arrancar un contenedor kibana linkado a elasticsearch
-
-```sh
-$ docker run -p 5601:5601 --name kebana_containner --link anuncios_elasticsearch:elasticsearch kibana
-```
-3. Arrancar un contenedor fluentd linkado a elasticsearch
- 
-```sh
-$ docker run -it -p 24224:24224 --name fluentd_containner --link elasticsearch_containner:elasticsearch scatt89/anunciosfluentd:1.0
+$ docker-compose up
 ```
 
-4. Arrancar un contenedor mysql
- 
-```sh
-$ docker run --name db_containner -e MYSQL_ROOT_PASSWORD=myPass -e MYSQL_DATABASE=myDBname -d mysql:latest
-```
+### Manually run containers
+The following console instructions allow us start the Logging-Docker project manually container by container.  
 
-5. Arrancar un contenedor app linkado a mysql
- 
-```sh
-$ docker run -p 8080:8080 --name app_containner -e MYSQL_CONTAINER=db -e MYSQL_DATABASE= myDBname -e DLL-AUTO=create -e MYSQL-PORT=3306 --link db_containner:db scat89/apiRestApp:latest
-```
-6. Una vez terminados estos pasos deberías poder ver los logs de tu aplicación y bd accediendo a la siguiente dirección en tu navegador:
-http://localhost:5601
+* Run an __elasticsearch-container__
+
+````
+$ docker run --name elasticsearch-containner elasticsearch
+````
+
+* Run a __kibana-container__ linked to the _elasticsearch-container_
+
+````
+$ docker run -p 5601:5601 --name kibana-containner --link elasticsearch-containner:elasticsearch-containner kibana
+````
+
+* Run a __fluentd-container__ linked to _elasticsearch-container_
+
+````
+$ docker run -p 24224:24224 --name fluentd-containner --link elasticsearch-containner:elasticsearch-containner scatt89/fluentd
+````
+
+* Run a __db-container__
+
+````
+$ docker run --name db-containner -e MYSQL_ROOT_PASSWORD=myPass -e MYSQL_DATABASE=myDBname mysql
+````
+
+* Run an __app-container__ linked to _db-container_
+
+````
+$ docker run -p 8080:8080 --name app-containner --link db-containner:db-containner scat89/apirest
+````
+
+* Once finished the previous steps you should be able to see your app-container and db-container logs accessing the following address in your web browser [http://localhost:5601](http://localhost:5601)
