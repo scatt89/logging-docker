@@ -1,6 +1,10 @@
 elasticsearch:
   container_name: elasticsearch
   image: elasticsearch
+  volumes:
+    - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  ports:
+    - "9200:9200"
 
 kibana:
   container_name: kibana
