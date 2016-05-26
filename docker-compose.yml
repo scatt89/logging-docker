@@ -2,7 +2,7 @@ elasticsearch:
   container_name: elasticsearch
   image: elasticsearch
   volumes:
-    - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    - ./elastic_conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
   ports:
     - "9200:9200"
 
@@ -18,6 +18,10 @@ kibana:
 fluentd:
   container_name: fluentd
   image: scatt89/fluentd
+  volumes:
+    - ./fluentd/conf:/fluentd/etc
+  environment:
+    - FLUENTD_CONF=fluent.conf
   ports:
     - "24224:24224"
   links:
