@@ -49,4 +49,9 @@ app:
     - mysql:db
   restart: always
 
-
+logvisualizer:
+  container_name: logvisualizer
+  image: scatt89/dockerlogviewer
+  ports:
+    - "9001:80"
+  command: /usr/sbin/apache2ctl -D FOREGROUND
