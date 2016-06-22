@@ -58,4 +58,10 @@ $ docker run --name db-containner -e MYSQL_ROOT_PASSWORD=myPass -e MYSQL_DATABAS
 $ docker run -p 8080:8080 --name app-containner --link db-containner:db-containner scat89/apirest
 ````
 
-* Once finished the previous steps you should be able to see your app-container and db-container logs accessing the following address in your web browser [http://localhost:5601](http://localhost:5601)
+* Run a __dockerlogviewer-container__
+
+````
+$ docker run -d -p 9001:80 --name logvisualizer scatt89/dockerlogviewer
+````
+
+* Once finished the previous steps you should be able to see your app-container and db-container logs accessing the following address in your web browser in the Docker Log Viewer app [http://localhost:9001/](http://localhost:9001/) or Kibana [http://localhost:5601](http://localhost:5601)
