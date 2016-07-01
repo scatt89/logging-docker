@@ -6,7 +6,7 @@ An integrated logging and monitoring solution for docker.
 
 Logging-Docker is a Docker-compose project which provides a monitoring and logging solution for your docker container. The following diagram shows the project schema.
 
-_(schema)_
+[![Logging Docker schema](https://github.com/scatt89/logging-docker/tree/master/img/schema.jpg)]
 
 As you can see we have a docker apirest container, from now we will call it __app-container__. This container is linked with another container which has a MySQL database. From now we will call this last one __db-container__. Our app-container makes requests to the db-container, which send replies with some data.
 
